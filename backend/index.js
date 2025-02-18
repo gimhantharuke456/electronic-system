@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { PrismaClient } = require("@prisma/client");
 const routes = require("./route");
 
@@ -8,6 +9,7 @@ const PORT = 8080;
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(cors());
 
 // Centralized routing
 app.use("/api", routes);
