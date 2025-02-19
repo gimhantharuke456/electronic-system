@@ -25,6 +25,33 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
+function formatSupplierManager(inputString) {
+  if (typeof inputString !== "string") {
+    return "Invalid input: Please provide a string."; // Handle non-string input
+  }
+
+  // 1. Convert to lowercase:
+  const lowerCaseString = inputString.toLowerCase();
+
+  // 2. Replace underscores and hyphens with spaces:
+  const spacedString = lowerCaseString.replace(/[-_]+/g, " ");
+
+  // 3. Capitalize the first letter of each word:
+  const words = spacedString.split(" ");
+  const capitalizedWords = words.map((word) => {
+    if (word.length > 0) {
+      // Handle empty words (e.g., from double spaces)
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+    return ""; // Return empty string for empty words
+  });
+
+  // 4. Join the words back together with spaces:
+  const formattedString = capitalizedWords.join(" ");
+
+  return formattedString;
+}
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -213,6 +240,7 @@ const UserManagement = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
+      render: (role) => <p>{formatSupplierManager(role)}</p>,
     },
     {
       title: "Work Start Date",
@@ -352,7 +380,13 @@ const UserManagement = () => {
             initialValue="manager"
           >
             <Select>
-              <Select.Option value="manager">Manager</Select.Option>
+              <Select.Option value="product_manager">
+                Product Manager
+              </Select.Option>
+              <Select.Option value="supplier_manager">
+                Supplier Manager
+              </Select.Option>
+              <Select.Option value="order_manager">Order Manager</Select.Option>
               <Select.Option value="admin">Admin</Select.Option>
             </Select>
           </Form.Item>

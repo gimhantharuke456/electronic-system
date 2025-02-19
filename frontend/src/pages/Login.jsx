@@ -18,6 +18,7 @@ const Login = () => {
       // Store the token in localStorage
       if (data && data.token) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.user.role);
         message.success({
           content: "Login successful!",
           duration: 3,

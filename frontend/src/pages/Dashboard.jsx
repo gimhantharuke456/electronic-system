@@ -20,12 +20,13 @@ const { Sider } = Layout;
 const { Title } = Typography;
 
 const Dashboard = () => {
+  const role = localStorage.getItem("role");
   const [collapsed, setCollapsed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(1);
   const location = useLocation();
   const navigate = useNavigate();
   // Menu items configuration
-  const menuItems = [
+  const adminMenuItems = [
     {
       key: "users",
       icon: <UserOutlined />,
@@ -76,6 +77,101 @@ const Dashboard = () => {
       },
     },
   ];
+  const orderManagerMenuItems = [
+    {
+      key: "orders",
+      icon: <ShoppingCartOutlined />,
+      label: "Order Management",
+      onClick: () => {
+        setActiveIndex(5);
+      },
+    },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+      },
+    },
+  ];
+  const supplierManagerMenuItems = [
+    {
+      key: "suppliers",
+      icon: <TeamOutlined />,
+      label: "Supplier Management",
+      onClick: () => {
+        setActiveIndex(2);
+      },
+    },
+
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+      },
+    },
+  ];
+  const productManagerMenuItems = [
+    {
+      key: "categories",
+      icon: <AppstoreOutlined />,
+      label: "Category Management",
+      onClick: () => {
+        setActiveIndex(3);
+      },
+    },
+    {
+      key: "products",
+      label: "Product Management",
+      icon: <ShoppingOutlined />,
+      onClick: () => {
+        setActiveIndex(4);
+      },
+    },
+
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+      },
+    },
+  ];
+  const userManagerMenuItems = [
+    {
+      key: "users",
+      icon: <UserOutlined />,
+      label: "User Management",
+      onClick: () => {
+        setActiveIndex(1);
+      },
+    },
+
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+      },
+    },
+  ];
+
+  const activeMenu = {
+    admin: adminMenuItems,
+    user_managet: userManagerMenuItems,
+    supplier_manager: supplierManagerMenuItems,
+    order_manager: orderManagerMenuItems,
+    product_manager: productManagerMenuItems,
+  };
 
   // Function to determine the selected menu key based on current path
   const getSelectedKey = () => {
@@ -115,7 +211,7 @@ const Dashboard = () => {
           theme="dark"
           defaultSelectedKeys={[getSelectedKey()]}
           mode="inline"
-          items={menuItems}
+          items={activeMenu[role]}
         />
       </Sider>
       <Layout
