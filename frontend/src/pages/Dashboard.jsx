@@ -61,14 +61,6 @@ const Dashboard = () => {
       },
     },
     {
-      key: "products",
-      label: "Product Management",
-      icon: <ShoppingOutlined />,
-      onClick: () => {
-        setActiveIndex(4);
-      },
-    },
-    {
       key: "predicitions",
       label: "Future Sales Management",
       icon: <ShoppingOutlined />,

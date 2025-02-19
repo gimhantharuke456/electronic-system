@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.ant-table-row-danger {
+  background-color: #fff1f0;
+}
+.ant-table-row-danger:hover > td {
+  background-color: #ffccc7 !important;
+}
