@@ -425,7 +425,7 @@ const OrderManagement = () => {
               options={productSearchResults.map((product) => ({
                 key: product.id,
                 value: product.name,
-                label: `${product.name} (${product.productSlug})`,
+                label: `${product.name} (${product.productSlug}) (In Stock Amount : ${product.quantity})`,
               }))}
             />
           </Form.Item>
