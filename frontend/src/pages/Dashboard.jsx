@@ -6,6 +6,7 @@ import {
   AppstoreOutlined,
   TeamOutlined,
   ShoppingOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 import UserManagement from "../components/UserManagement";
@@ -13,6 +14,7 @@ import CategoryManagement from "../components/CategoryManagement";
 import SupplierManagement from "../components/SupplierManagement";
 import OrderManagement from "../components/OrderManagement";
 import ProductManagement from "../components/ProductManagement";
+import { useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 const { Title } = Typography;
@@ -21,7 +23,7 @@ const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(1);
   const location = useLocation();
-
+  const navigate = useNavigate();
   // Menu items configuration
   const menuItems = [
     {
@@ -62,6 +64,15 @@ const Dashboard = () => {
       label: "Order Management",
       onClick: () => {
         setActiveIndex(5);
+      },
+    },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        navigate("/login");
       },
     },
   ];

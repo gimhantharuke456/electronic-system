@@ -22,8 +22,10 @@ const generateProductSlug = async () => {
 const createProduct = async (data) => {
   const productSlug = await generateProductSlug();
   return await prisma.product.create({
-    ...data,
-    productSlug,
+    data: {
+      ...data,
+      productSlug,
+    },
   });
 };
 

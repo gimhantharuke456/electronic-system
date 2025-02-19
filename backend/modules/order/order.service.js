@@ -19,8 +19,7 @@ const generateOrderSlug = async () => {
 const createOrder = async (data) => {
   const orderSlug = await generateOrderSlug();
   return await prisma.order.create({
-    ...data,
-    orderSlug: orderSlug,
+    data: { ...data, orderSlug: orderSlug },
   });
 };
 
@@ -38,6 +37,9 @@ const getOrderById = async (id) => {
 
 // Update an order by ID
 const updateOrder = async (id, data) => {
+  if (data.status && data.status === "Delivered") {
+    await completeOrder(id);
+  }
   return await prisma.order.update({
     where: { id },
     data,
@@ -61,15 +63,19 @@ const completeOrder = async (id) => {
     throw new Error("Order not found");
   }
 
-  if (order.status === "Completed") {
+  if (order.status === "Delivered") {
     throw new Error("Order is already completed");
   }
 
   // Reduce product quantities
-  const products = JSON.parse(order.products);
+  const products =
+    typeof order.products === "string"
+      ? JSON.parse(order.products)
+      : order.products;
+
   for (const item of products) {
     const product = await prisma.product.findUnique({
-      where: { id: item.productId },
+      where: { id: item.id },
     });
 
     if (!product) {
@@ -81,7 +87,7 @@ const completeOrder = async (id) => {
     }
 
     await prisma.product.update({
-      where: { id: item.productId },
+      where: { id: item.id },
       data: { quantity: product.quantity - item.quantity },
     });
   }

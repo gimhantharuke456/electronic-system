@@ -6,6 +6,7 @@ const createProduct = async (req, res) => {
     const product = await productService.createProduct(req.body);
     res.status(201).json(product);
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: error.message });
   }
 };
