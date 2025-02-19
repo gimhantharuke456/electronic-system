@@ -41,7 +41,25 @@ const OrderManagement = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productSearchResults, setProductSearchResults] = useState([]);
+  const [productStockModalOpened, setProductStockModalOpened] = useState(false);
+  const [productStocks, setProductStocks] = useState([]);
   const [form] = Form.useForm();
+
+  const getStockOutProducts = async () => {
+    const products = (await productApi.getAll()).data;
+    let found = false;
+    const productStocks = [];
+    for (const product of products) {
+      if (product.quantity < 5) {
+        productStocks.push(product);
+        found = true;
+      }
+    }
+    setProductStocks(productStocks);
+    if (found) {
+      setProductStockModalOpened(true);
+    }
+  };
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -208,10 +226,12 @@ const OrderManagement = () => {
       setLoading(true);
       if (editingOrder) {
         await orderApi.update(editingOrder.id, orderData);
+        await getStockOutProducts();
         message.success("Order updated successfully");
       } else {
         await orderApi.create(orderData);
         message.success("Order created successfully");
+        await getStockOutProducts();
       }
       handleCancel();
       fetchOrders();
@@ -246,6 +266,18 @@ const OrderManagement = () => {
     };
     return colors[status] || "default";
   };
+  const stockColumns = [
+    {
+      title: "Product Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Stock Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+  ];
 
   // Table columns
   const columns = [
@@ -473,6 +505,22 @@ const OrderManagement = () => {
             </Space>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title="Below Products Going Low"
+        open={productStockModalOpened}
+        onCancel={() => setProductStockModalOpened(false)}
+        footer={null}
+      >
+        <Table
+          dataSource={productStocks.map((product, index) => ({
+            ...product,
+            key: index,
+          }))}
+          columns={stockColumns}
+          pagination={false}
+          scroll={{ y: 400 }}
+        />
       </Modal>
     </Content>
   );
