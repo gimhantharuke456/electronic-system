@@ -54,7 +54,7 @@ const Predictions = () => {
     for (let i = 0; i < sortedEntries.length; i++) {
       const currentEntry = sortedEntries[i];
       let [predict, product] = await Promise.all([
-        predictSales(currentEntry.totalQuantity),
+        predictSales(currentEntry.totalQuantity, 6),
         (await productApi.getById(currentEntry.productId)).data,
       ]);
 

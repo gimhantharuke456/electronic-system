@@ -1,8 +1,9 @@
 import axios from "axios";
 
-export const predictSales = async (sales) => {
-  const data = await axios.post("http://127.0.0.1:5000/predict", {
-    last_month_sales: sales,
+export const predictSales = async (sales, month) => {
+  const data = await axios.post("http://127.0.0.1:5001/predict", {
+    current_quantity: sales,
+    month: month,
   });
   return data.data["next_month_sales"];
 };
