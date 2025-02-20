@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Table, Card, Typography } from "antd";
+import { Layout, Table, Card, Typography, Modal } from "antd";
 import { orderApi } from "../api/orderApi";
 import { predictSales } from "../api/predictApi";
 import { productApi } from "../api/productApi";
@@ -10,6 +10,7 @@ const { Title } = Typography;
 const Predictions = () => {
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [alertModalOpened, setAlertModalOpened] = useState(false);
 
   const processOrders = async (orders) => {
     const salesByProductMonth = {};
@@ -29,7 +30,6 @@ const Predictions = () => {
             key,
             productId: product.id,
             productName: product.name,
-
             month: monthYear,
             totalSales: 0,
             currentStock: 0,
@@ -53,12 +53,14 @@ const Predictions = () => {
 
     for (let i = 0; i < sortedEntries.length; i++) {
       const currentEntry = sortedEntries[i];
+
       let [predict, product] = await Promise.all([
         predictSales(currentEntry.totalQuantity, 6),
         (await productApi.getById(currentEntry.productId)).data,
       ]);
 
       predict = Math.round(predict ?? 0);
+
       if (i > 0) {
         const prevEntry = sortedEntries[i - 1];
         if (prevEntry.productId === currentEntry.productId) {
@@ -66,15 +68,24 @@ const Predictions = () => {
 
           currentEntry.nextMonthSales = predict;
           currentEntry.currentStock = product ? product.quantity : 0;
+          if (currentEntry.currentStock < predict) {
+            setAlertModalOpened(true);
+          }
         } else {
           // If no previous data, use current sales as prediction
           currentEntry.nextMonthSales = predict;
           currentEntry.currentStock = product ? product.quantity : 0;
+          if (currentEntry.currentStock < predict) {
+            setAlertModalOpened(true);
+          }
         }
       } else {
         // For first entry, use current sales as prediction
         currentEntry.nextMonthSales = predict;
         currentEntry.currentStock = product ? product.quantity : 0;
+        if (currentEntry.currentStock < predict) {
+          setAlertModalOpened(true);
+        }
       }
     }
 
@@ -189,6 +200,25 @@ const Predictions = () => {
           />
         </Card>
       </Content>
+      <Modal
+        title="These stocks running low"
+        width={800}
+        open={alertModalOpened}
+        onClose={() => {
+          setAlertModalOpened(false);
+        }}
+        onCancel={() => {
+          setAlertModalOpened(false);
+        }}
+        footer={null}
+      >
+        <Table
+          columns={columns}
+          dataSource={salesData.filter(
+            (sale) => sale.currentStock < sale.nextMonthSales
+          )}
+        />
+      </Modal>
     </Layout>
   );
 };
