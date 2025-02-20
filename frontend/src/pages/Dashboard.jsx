@@ -220,7 +220,7 @@ const Dashboard = () => {
           }}
         >
           <Title level={5} style={{ color: "white", margin: 0 }}>
-            {collapsed ? "IMS" : "IMS Dashboard"}
+            {collapsed ? "Dashboard" : "Dashboard"}
           </Title>
         </div>
         <Menu
