@@ -87,7 +87,7 @@ export const userApi = {
 
   changePassword: async (id, passwords) => {
     try {
-      const response = await instance.post(
+      const response = await instance.put(
         `/users/${id}/change-password`,
         passwords
       );
