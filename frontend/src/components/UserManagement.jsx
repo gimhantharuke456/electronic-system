@@ -24,6 +24,7 @@ import { userApi } from "../api/userApi";
 import moment from "moment";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 function formatSupplierManager(inputString) {
   if (typeof inputString !== "string") {
@@ -57,6 +58,8 @@ const UserManagement = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [changePasswordModalVisible, setChangePasswordModalVisible] =
+    useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [form] = Form.useForm();
@@ -396,10 +399,35 @@ const UserManagement = () => {
               <Button type="primary" htmlType="submit" loading={loading}>
                 {editingUser ? "Update" : "Create"}
               </Button>
+              {editingUser && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setChangePasswordModalVisible(true);
+                  }}
+                  loading={loading}
+                >
+                  {"Change Password"}
+                </Button>
+              )}
               <Button onClick={handleCancel}>Cancel</Button>
             </Space>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        open={changePasswordModalVisible}
+        onCancel={() => {
+          setChangePasswordModalVisible(false);
+        }}
+        footer={null}
+      >
+        <ChangePasswordForm
+          userId={editingUser?.id}
+          onSuccess={() => {
+            setChangePasswordModalVisible(false);
+          }}
+        />
       </Modal>
     </Content>
   );
