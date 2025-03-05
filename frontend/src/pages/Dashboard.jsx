@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu, Typography } from "antd";
 import {
   UserOutlined,
@@ -184,6 +184,7 @@ const Dashboard = () => {
   const activeMenu = {
     admin: adminMenuItems,
     user_managet: userManagerMenuItems,
+    user_manager: userManagerMenuItems,
     supplier_manager: supplierManagerMenuItems,
     order_manager: orderManagerMenuItems,
     product_manager: productManagerMenuItems,
@@ -194,6 +195,27 @@ const Dashboard = () => {
     const path = location.pathname.split("/")[2];
     return path || "users";
   };
+
+  useEffect(() => {
+    if (role === "admin") {
+      setActiveIndex(1);
+    }
+    if (role === "user_managet") {
+      setActiveIndex(1);
+    }
+    if (role === "user_manager") {
+      setActiveIndex(1);
+    }
+    if (role === "supplier_manager") {
+      setActiveIndex(2);
+    }
+    if (role === "order_manager") {
+      setActiveIndex(5);
+    }
+    if (role === "product_manager") {
+      setActiveIndex(3);
+    }
+  }, [role]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
